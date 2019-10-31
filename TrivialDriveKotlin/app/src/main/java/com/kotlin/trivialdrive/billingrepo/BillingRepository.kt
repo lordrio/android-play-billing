@@ -487,7 +487,7 @@ class BillingRepository private constructor(private val application: Application
         playStoreBillingClient.endConnection()
         // normally you don't worry about closing a DB connection unless you have more than
         // one DB open. so no need to call 'localCacheBillingClient.close()'
-        Log.d(LOG_TAG, "startDataSourceConnections")
+        Log.d(LOG_TAG, "endDataSourceConnections")
     }
 
     private fun instantiateAndConnectToPlayBillingService() {

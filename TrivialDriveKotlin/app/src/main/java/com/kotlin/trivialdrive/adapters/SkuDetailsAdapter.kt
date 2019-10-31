@@ -76,7 +76,7 @@ open class SkuDetailsAdapter : RecyclerView.Adapter<SkuDetailsAdapter.SkuDetails
         fun bind(item: AugmentedSkuDetails?) {
             item?.apply {
                 itemView?.apply {
-                    val name = title?.substring(0, title.indexOf("("))
+                    val name = title
                     sku_title.text = name
                     sku_description.text = description
                     sku_price.text = price

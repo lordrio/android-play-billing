@@ -25,6 +25,8 @@ import com.kotlin.trivialdrive.billingrepo.localdb.AugmentedSkuDetails
 import com.kotlin.trivialdrive.billingrepo.localdb.GasTank
 import com.kotlin.trivialdrive.billingrepo.localdb.GoldStatus
 import com.kotlin.trivialdrive.billingrepo.localdb.PremiumCar
+import com.kotlin.trivialdrive.storms.StormsRepo
+import com.kotlin.trivialdrive.storms.StormsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -51,15 +53,26 @@ class BillingViewModel(application: Application) : AndroidViewModel(application)
     private val LOG_TAG = "BillingViewModel"
     private val viewModelScope = CoroutineScope(Job() + Dispatchers.Main)
     private val repository: BillingRepository
+    private val storms: StormsRepository
+    private val stormsR: StormsRepo
 
     init {
+        stormsR = StormsRepo.getInstance(application)
+        stormsR.startDataSourceConnections()
+
+        storms = StormsRepository.getInstance(application)
+        storms.startDataSourceConnections()
+
         repository = BillingRepository.getInstance(application)
         repository.startDataSourceConnections()
         gasTankLiveData = repository.gasTankLiveData
         premiumCarLiveData = repository.premiumCarLiveData
         goldStatusLiveData = repository.goldStatusLiveData
+
         subsSkuDetailsListLiveData = repository.subsSkuDetailsListLiveData
-        inappSkuDetailsListLiveData = repository.inappSkuDetailsListLiveData
+//        inappSkuDetailsListLiveData = repository.inappSkuDetailsListLiveData
+//        inappSkuDetailsListLiveData = storms.inappSkuDetailsListLiveData
+        inappSkuDetailsListLiveData = stormsR.liveSkuList
     }
 
     /**
@@ -72,11 +85,19 @@ class BillingViewModel(application: Application) : AndroidViewModel(application)
         super.onCleared()
         Log.d(LOG_TAG, "onCleared")
         repository.endDataSourceConnections()
+        storms.endDataSourceConnections()
+        stormsR.endDataSourceConnections()
         viewModelScope.coroutineContext.cancel()
     }
 
     fun makePurchase(activity: Activity, augmentedSkuDetails: AugmentedSkuDetails) {
-        repository.launchBillingFlow(activity, augmentedSkuDetails)
+//        repository.launchBillingFlow(activity, augmentedSkuDetails)
+//        storms.launchBillingFlow(activity, augmentedSkuDetails)
+        if(augmentedSkuDetails.sku == "gold_monthly" || augmentedSkuDetails.sku == "gold_yearly") {
+            repository.launchBillingFlow(activity, augmentedSkuDetails)
+        } else {
+            stormsR.launchBillingFlow(activity, augmentedSkuDetails)
+        }
     }
 
     /**
@@ -89,6 +110,11 @@ class BillingViewModel(application: Application) : AndroidViewModel(application)
      */
     fun decrementAndSaveGas() {
         val gas = gasTankLiveData.value
+        var i = 10
+        i.apply {
+            print(this)
+        }
+        gas?.decrement()
         gas?.apply {
             decrement()
             viewModelScope.launch {

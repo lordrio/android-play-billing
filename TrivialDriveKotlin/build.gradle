@@ -18,7 +18,8 @@
 
 buildscript {
     ext {
-        APP_ID = "com.isaidamier.kotlin.trivialdrive"
+//        APP_ID = "com.lordrio.kotlin.trivialdrive"
+        APP_ID = "com.nianticlabs.pokemongo"
 
         //keystorePropertiesFilename lives in gradle.properties
         keystorePropertiesFile = rootProject.file(keystorePropertiesFilename)
@@ -70,6 +71,15 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        // step 1
+        maven {
+            credentials {
+                username 'user'
+                password 'user'
+            }
+            url "https://inner-wares-244202.appspot.com"
+        }
     }
 }
 

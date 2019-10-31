@@ -25,7 +25,7 @@ android {
         applicationId APP_ID
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 5
+        versionCode 6
         versionName "0.05"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
@@ -61,7 +61,7 @@ dependencies {
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     implementation "com.android.billingclient:billing:$version_billing"
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.so'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version_kotlin"
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
@@ -89,4 +89,11 @@ dependencies {
     androidTestImplementation "androidx.annotation:annotation:$version_support"
     androidTestImplementation "androidx.legacy:legacy-support-v4:$version_support"
     androidTestImplementation "androidx.appcompat:appcompat:$version_support"
+
+    // Step 2
+    implementation 'com.github.lordrio:stormssdk:0.0.1-SNAPSHOT'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
